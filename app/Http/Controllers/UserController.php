@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\UserModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
-        // Ambil semua data dari tabel m_user
-        $user = UserModel::where('username', 'manager9')->firstOrFail();
-
-        // Tampilkan data dalam view 'user'
-        return view('user', ['data' => $user]);
+        // Ambil jumlah data dari tabel m_user berdasarkan level_id
+        $userCount = UserModel::where('level_id', 2)->count();
+        
+        // Tampilkan data dalam view 'user' dengan variabel 'data'
+        return view('user', ['data' => $userCount]);
     }
 }
