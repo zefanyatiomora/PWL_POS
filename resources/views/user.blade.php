@@ -12,22 +12,23 @@
             <th>Username</th>
             <th>Nama</th>
             <th>ID Level Pengguna</th>
+            <th>Kode Level</th>
+            <th>Nama Level</th>
             <td>Aksi</td>
         </tr>
-        @foreach ($data as $user)
+        @foreach ($data as $d)
         <tr>
-            <td>{{ $user->user_id }}</td>
-            <td>{{ $user->username }}</td>
-            <td>{{ $user->nama }}</td>
-            <td>{{ $user->level_id }}</td>
+            <td>{{ $d->user_id }}</td>
+            <td>{{ $d->username }}</td>
+            <td>{{ $d->nama }}</td>
+            <td>{{ $d->level_id }}</td>
+            <td>{{ $d->level->level_kode }}</td> <!-- Mengakses kolom 'level_kode' dari tabel Level -->
+            <td>{{ $d->level->level_nama }}</td> <!-- Mengakses kolom 'level_nama' dari tabel Level -->
             <td>
-                <a href="/user/ubah/{{$user->user_id}}">Ubah</a> |
+                <a href="/user/ubah/{{ $d->user_id }}">Ubah</a> |
 
                 <!-- Form Hapus -->
-                <form action="/user/hapus/{{ $user->user_id }}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">Hapus</button>
+                <form action="/user/hapus/{{ $d->user_id }}">Hapus</a></td>
                 </form>
             </td>
         </tr>
