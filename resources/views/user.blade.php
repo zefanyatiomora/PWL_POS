@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Data User</h1>
-    <a href="/user/tambah">+ Tambah User</a>
+    <a href="{{url ('/user/tambah')}}">+ Tambah User</a>
     <table border="1" cellpadding="2" cellspacing="0">
         <tr>
             <th>ID</th>
@@ -25,10 +25,10 @@
             <td>{{ $d->level->level_kode }}</td> <!-- Mengakses kolom 'level_kode' dari tabel Level -->
             <td>{{ $d->level->level_nama }}</td> <!-- Mengakses kolom 'level_nama' dari tabel Level -->
             <td>
-                <a href="/user/ubah/{{ $d->user_id }}">Ubah</a> |
+                <a href="{{url ('/user/ubah/')}}"{{ $d->user_id }}">Ubah</a> |
 
                 <!-- Form Hapus -->
-                <form action="/user/hapus/{{ $d->user_id }}">Hapus</a></td>
+                <form action="{{url ('/user/hapus/')}}" {{ $d->user_id }}">Hapus</a></td>
                 </form>
             </td>
         </tr>
