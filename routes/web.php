@@ -22,4 +22,5 @@ Route::group(['prefix' => 'user'], function () {
     Route::put('/{id}', [UserController::class, 'update']);
     // menghapus data user
     Route::delete('/{id}', [UserController::class, 'destroy']);
+    
 });

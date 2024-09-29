@@ -15,40 +15,50 @@ class UserController extends Controller
             'title' => 'Daftar User',
             'list' => ['Home', 'User']
         ];
-
+    
         $page = (object) [
             'title' => 'Daftar user yang terdaftar dalam sistem'
         ];
-
+    
         $activeMenu = 'user'; // set menu yang sedang aktif
-
+    
+        $level = LevelModel::all(); // ambil data level untuk filter level
+    
         return view('user.index', [
             'breadcrumb' => $breadcrumb,
             'page' => $page,
+            'level' => $level,
             'activeMenu' => $activeMenu
         ]);
     }
     public function list(Request $request)
 {
+    // Ambil data pengguna beserta level aksesnya
     $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
         ->with('level')
-        ->get();
+        ->get(); // Tambahkan get() untuk memeriksa data yang diambil
 
+        if ($request->level_id) {
+            $users->where('level_id', $request->level_id);
+        }
+    // Konversi data pengguna menjadi format yang sesuai untuk DataTables
     return DataTables::of($users)
+        // Tambahkan kolom indeks/no urut
         ->addIndexColumn()
+        // Tambahkan kolom aksi dengan tombol detail, edit, dan hapus
         ->addColumn('aksi', function ($user) {
-            $btn = '<a href="' . url('/user/' . $user->user_id) . '" class="btn btn-info btn-sm">Detail</a>';
-            $btn .= '<a href="' . url('/user/' . $user->user_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a>';
-            $btn .= '<form class="d-inline-block" method="POST" action="' . url('/user/' . $user->user_id) . '">';
-            $btn .= csrf_field();
-            $btn .= method_field('DELETE');
-            $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button>';
-            $btn .= '</form>';
-            return $btn;
+            return '<a href="' . url('/user/' . $user->user_id) . '" class="btn btn-info btn-sm">Detail</a>' .
+                   '<a href="' . url('/user/' . $user->user_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a>' .
+                   '<form class="d-inline-block" method="POST" action="' . url('/user/' . $user->user_id) . '">' .
+                   csrf_field() . method_field('DELETE') .
+                   '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
         })
+        // Tandai kolom aksi sebagai HTML
         ->rawColumns(['aksi'])
+        // Buat objek DataTables
         ->make(true);
 }
+
 public function create()
 {
     $breadcrumb = (object) [
@@ -187,4 +197,5 @@ public function destroy(string $id)
         return redirect('/user')->with('error', 'Data user gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
     }
 }
+
 }
