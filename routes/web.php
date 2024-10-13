@@ -41,7 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
 
     // Routes untuk User
-    Route::middleware(['authorize:ADM'])->group(function(){
+    Route::middleware(['authorize:ADM, MNG, STF'])->group(function(){
         Route::get('/user', [UserController::class, 'index']);
         Route::post('/user/list', [UserController::class, 'list']);
         Route::get('/user/create', [UserController::class, 'create']);
@@ -59,7 +59,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Routes untuk Level
-    Route::middleware(['authorize:ADM,MNG'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG, STF'])->group(function(){
         Route::get('/level', [LevelController::class, 'index']);
         Route::post('/level/list', [LevelController::class, 'list']);
         Route::get('/level/create', [LevelController::class, 'create']);
@@ -114,21 +114,15 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Routes untuk Barang
-    Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,STF'])->group(function() {
         Route::get('/barang', [BarangController::class, 'index']);
         Route::post('/barang/list', [BarangController::class, 'list']);
-        Route::get('/barang/create', [BarangController::class, 'create']);
-        Route::post('/barang', [BarangController::class, 'store']);
-        Route::get('/barang/create_ajax', [BarangController::class, 'create_ajax']);
-        Route::post('/barang/ajax', [BarangController::class, 'store_ajax']);
-        Route::get('/barang/{id}', [BarangController::class, 'show']);
-        Route::get('/barang/{id}/edit', [BarangController::class, 'edit']);
-        Route::put('/barang/{id}', [BarangController::class, 'update']);
-        Route::get('/barang/{id}/edit_ajax', [BarangController::class, 'edit_ajax']);
-        Route::put('/barang/{id}/update_ajax', [BarangController::class, 'update_ajax']);
-        Route::get('/barang/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']);
-        Route::delete('/barang/{id}/delete_ajax', [BarangController::class, 'delete_ajax']);
-        Route::delete('/barang/{id}', [BarangController::class, 'destroy']);
+        Route::get('/barang/create_ajax', [BarangController::class, 'create_ajax']); // ajax form create
+        Route::post('/barang_ajax', [BarangController::class, 'store_ajax']); // ajax store
+        Route::get('/barang/{id}/edit_ajax', [BarangController::class, 'edit_ajax']); // ajax form edit
+        Route::put('/barang/{id}/update_ajax', [BarangController::class, 'update_ajax']); // ajax update
+        Route::get('/barang/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); // ajax form confirm
+        Route::delete('/barang/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); // ajax delete
     });
 
 });
