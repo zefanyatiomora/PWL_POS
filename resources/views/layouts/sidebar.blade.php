@@ -61,6 +61,11 @@
                             <p>Transaksi Penjualan</p>
                         </a>
                     </li>
+                    <li>
+                      <a href="{{ url('logout') }}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                      </a>
+                    </li>
                 </ul>
             </nav>
         </div>
