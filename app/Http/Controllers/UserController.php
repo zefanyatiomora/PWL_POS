@@ -309,4 +309,5 @@ public function delete_ajax(Request $request, $id)
 
     return redirect('/');
 }
+
 }

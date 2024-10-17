@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,21 +28,19 @@ Route::pattern('id', '[0-9]+');
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
-Route::get('register', [AuthController::class, 'registerForm'])->name('register');
-Route::post('register', [AuthController::class, 'register'])->name('register');
+
+// Rute untuk registrasi
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register']);
 
 // Grup untuk route yang membutuhkan autentikasi
 Route::middleware(['auth'])->group(function () {
 
     // Route untuk halaman home
-    // Route::get('/', function () {
-    //     return view('welcome');
-    // });
-
     Route::get('/', [WelcomeController::class, 'index']);
 
     // Routes untuk User
-    Route::middleware(['authorize:ADM, MNG, STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
         Route::get('/user', [UserController::class, 'index']);
         Route::post('/user/list', [UserController::class, 'list']);
         Route::get('/user/create', [UserController::class, 'create']);
@@ -59,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Routes untuk Level
-    Route::middleware(['authorize:ADM,MNG, STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
         Route::get('/level', [LevelController::class, 'index']);
         Route::post('/level/list', [LevelController::class, 'list']);
         Route::get('/level/create', [LevelController::class, 'create']);
@@ -75,7 +74,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/level/{id}/delete_ajax', [LevelController::class, 'delete_ajax']);
         Route::delete('/level/{id}', [LevelController::class, 'destroy']);
     });
-
 
     // Routes untuk Kategori
     Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
@@ -123,6 +121,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/barang/{id}/update_ajax', [BarangController::class, 'update_ajax']); // ajax update
         Route::get('/barang/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); // ajax form confirm
         Route::delete('/barang/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); // ajax delete
+        Route::get('/barang/import',[BarangController::class,'import']);
+        Route::post('/barang/import_ajax',[BarangController::class,'import_ajax']);
     });
 
 });
