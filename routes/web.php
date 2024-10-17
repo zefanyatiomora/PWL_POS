@@ -123,6 +123,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/barang/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); // ajax delete
         Route::get('/barang/import',[BarangController::class,'import']);
         Route::post('/barang/import_ajax',[BarangController::class,'import_ajax']);
+        Route::get('/barang/export_excel',[BarangController::class,'export_excel']);
     });
 
 });
