@@ -70,13 +70,11 @@ class LevelController extends Controller
 
     public function create_ajax()
 {
-    // Mengembalikan view untuk form level
     return view('level.create_ajax');
 }
 
     public function edit_ajax(string $id)
     {
-        // Temukan data level berdasarkan ID
         $level = LevelModel::find($id);
 
         if (!$level) {
@@ -88,31 +86,25 @@ class LevelController extends Controller
 
     public function store_ajax(Request $request) {
         if ($request->ajax() || $request->wantsJson()) {
-            // Aturan validasi untuk input level
             $rules = [
                 'level_kode' => 'required|string|min:3|unique:m_level,level_kode',
                 'level_nama' => 'required|string|max:100',
             ];
     
-            // Melakukan validasi
             $validator = Validator::make($request->all(), $rules);
     
             if ($validator->fails()) {
-                // Mengembalikan respon jika validasi gagal
                 return response()->json([
                     'status' => false,
                     'message' => 'Validasi Gagal',
                     'msgField' => $validator->errors(),
                 ]);
             }
-    
-            // Menyimpan data level
             LevelModel::create([
                 'level_kode' => $request->level_kode,
                 'level_nama' => $request->level_nama,
             ]);
     
-            // Mengembalikan respon sukses
             return response()->json([
                 'status' => true,
                 'message' => 'Data level berhasil disimpan',
@@ -128,8 +120,6 @@ class LevelController extends Controller
                 'level_kode' => 'required|string|max:20|unique:m_level,level_kode,' . $id . ',level_id',
                 'level_nama' => 'required|string|max:100',
             ];
-
-            // Validasi input
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
@@ -183,10 +173,7 @@ class LevelController extends Controller
 
     public function confirm_ajax(string $id)
 {
-    // Ambil data level berdasarkan ID
     $level = LevelModel::find($id);
-
-    // Jika data level tidak ditemukan, kirimkan respon error
     if (!$level) {
         return response()->json([
             'status' => false,
@@ -194,24 +181,18 @@ class LevelController extends Controller
         ]);
     }
 
-    // Kembalikan view konfirmasi penghapusan level
     return view('level.confirm_ajax', ['level' => $level]);
 }
 
 public function show_ajax(string $id)
 {
-    // Ambil data level berdasarkan ID
     $level = LevelModel::find($id);
-
-    // Jika data level tidak ditemukan, kirimkan respon error
     if (!$level) {
         return response()->json([
             'status' => false,
             'message' => 'Level tidak ditemukan.'
         ]);
     }
-
-    // Kembalikan view konfirmasi penghapusan level
     return view('level.show_ajax', ['level' => $level]);
 }
 
