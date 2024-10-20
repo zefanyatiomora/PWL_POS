@@ -1,66 +1,100 @@
-@extends('layouts.template')
-
-@section('content')
-<div class="card card-outline card-primary">
-    <div class="card-header">
-        <h3 class="card-title">{{ $page->title }}</h3>
-        <div class="card-tools"></div>
-    </div>
-    
-    <div class="card-body">
-        @empty($kategori)
-        <div class="alert alert-danger alert-dismissible">
-            <h5><i class="icon fas fa-ban"></i> Kesalahan!</h5>
-            Data yang Anda cari tidak ditemukan.
+@empty($kategori)
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
+                    Data yang anda cari tidak ditemukan
+                </div>
+                <a href="{{ url('/kategori') }}" class="btn btn-warning">Kembali</a>
+            </div>
         </div>
-        <a href="{{ url('kategori') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
-        @else
-        <form method="POST" action="{{ url('/kategori/'.$kategori->kategori_id) }}" class="form-horizontal">
-            @csrf
-            {!! method_field('PUT') !!} <!-- tambahkan baris ini untuk proses edit yang butuh method PUT -->
-
-            <div class="form-group row">
-                <div class="form-group row">
-                    <label class="col-1 control-label col-form-label">Kode Kategori</label>
-                    <div class="col-11">
-                        <input type="text" class="form-control" id="kategori_kode" name="kategori_kode" 
-                               value="{{ old('kategori_kode', $kategori->kategori_kode) }}" required>
-                        @error('kategori_kode')
-                        <small class="form-text text-danger">{{ $message }}</small>
-                        @enderror
+    </div>
+@else
+    <form action="{{ url('/kategori/' . $kategori->kategori_id . '/update_ajax') }}" method="POST" id="form-edit">
+        @csrf
+        @method('PUT')
+        <div id="modal-master" class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Data Kategori</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="kategori_kode">Kode Kategori</label>
+                        <input value="{{ $kategori->kategori_kode }}" type="text" name="kategori_kode" id="kategori_kode" class="form-control" required>
+                        <small id="error-kategori_kode" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label for="kategori_nama">Nama Kategori</label>
+                        <input value="{{ $kategori->kategori_nama }}" type="text" name="kategori_nama" id="kategori_nama" class="form-control" required>
+                        <small id="error-kategori_nama" class="error-text form-text text-danger"></small>
                     </div>
                 </div>
-                <label class="col-1 control-label col-form-label">Kategori</label>
-                <div class="col-11">
-                    <select class="form-control" id="kategori_id" name="kategori_id" required>
-                        <option value="">- Pilih Kategori -</option>
-                        @foreach($kategori as $item)
-                            <option value="{{ $item->kategori_id }}" 
-                                @if($item->kategori_id == $kategori->kategori_id) selected @endif>
-                                {{ $item->kategori_nama }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('kategori_id')
-                    <small class="form-text text-danger">{{ $message }}</small>
-                    @enderror
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
-            <div class="form-group row">
-                <label class="col-1 control-label col-form-label"></label>
-                <div class="col-11">
-                    <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-                    <a class="btn btn-sm btn-default ml-1" href="{{ url('kategori') }}">Kembali</a>
-                </div>
-            </div>
-        </form>
-        @endempty
-    </div>
-</div>
-@endsection
-
-@push('css')
-@endpush
-
-@push('js')
-@endpush
+        </div>
+    </form>
+    <script>
+        $(document).ready(function() {
+            $("#form-edit").validate({
+                rules: {
+                    kategori_kode: { required: true, minlength: 3, maxlength: 20 },
+                    kategori_nama: { required: true, minlength: 3, maxlength: 100 },
+                },
+                submitHandler: function(form) {
+                    $.ajax({
+                        url: form.action,
+                        type: form.method,
+                        data: $(form).serialize(),
+                        success: function(response) {
+                            if (response.status) {
+                                $('#myModal').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil',
+                                    text: response.message
+                                });
+                                dataKategori.ajax.reload(); // memanggil dataLevel utk instant reload
+                            } else {
+                                $('.error-text').text('');
+                                $.each(response.msgField, function(prefix, val) {
+                                    $('#error-' + prefix).text(val[0]);
+                                });
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Terjadi Kesalahan',
+                                    text: response.message
+                                });
+                            }
+                        }
+                    });
+                    return false; 
+                },
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+        });
+    </script>
+@endempty

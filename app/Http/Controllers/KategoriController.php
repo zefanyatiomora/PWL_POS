@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\KategoriModel;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class KategoriController extends Controller
@@ -35,11 +37,6 @@ class KategoriController extends Controller
         return DataTables::of($kategoris)
         ->addIndexColumn()  
         ->addColumn('aksi', function ($kategori) { 
-//            $btn  = '<a href="'.url('/kategori/' . $kategori->kategori_id).'" class="btn btn-info btn-sm">Detail</a> '; 
-//            $btn .= '<a href="'.url('/kategori/' . $kategori->kategori_id . '/edit').'" class="btn btn-warning btn-sm">Edit</a> '; 
-//            $btn .= '<form class="d-inline-block" method="POST" action="'. url('/kategori/' . $kategori->kategori_id).'">' 
-//                    . csrf_field() . method_field('DELETE') .  
-//                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';      
 $btn = '<button onclick="modalAction(\''.url('/kategori/' . $kategori->kategori_id . '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
 $btn .= '<button onclick="modalAction(\''.url('/kategori/' . $kategori->kategori_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
 $btn .= '<button onclick="modalAction(\''.url('/kategori/' . $kategori->kategori_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
@@ -248,4 +245,20 @@ return $btn;
         }
         return redirect('/');
     }
+
+    public function export_pdf() {
+        $kategori = KategoriModel::select( 'kategori_kode', 'kategori_nama',) 
+            ->orderBy('kategori_kode') 
+            ->get();
+        // use Barryvdh\DomPDF\Facade\Pdf;
+        $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
+        $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url $pdf->render();
+        return $pdf->stream ('Data Barang '.date('Y-m-d H:i:s').'.pdf');
+    }
+
+    public function show_ajax(string $id) {
+        $kategori = KategoriModel::find($id);
+
+        return view('kategori.show_ajax', ['kategori' => $kategori]);
+    } 
   }

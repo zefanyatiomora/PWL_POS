@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\SupplierModel;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class SupplierController extends Controller
 {
@@ -32,14 +34,9 @@ class SupplierController extends Controller
         return DataTables::of($suppliers)
         ->addIndexColumn()  
         ->addColumn('aksi', function ($supplier) { 
-//            $btn  = '<a href="'.url('/supplier/' . $supplier->supplier_id).'" class="btn btn-info btn-sm">Detail</a> '; 
-  //          $btn .= '<a href="'.url('/supplier/' . $supplier->supplier_id . '/edit').'" class="btn btn-warning btn-sm">Edit</a> '; 
-    //        $btn .= '<form class="d-inline-block" method="POST" action="'. url('/supplier/'.$supplier->supplier_id).'">' 
-      //              . csrf_field() . method_field('DELETE') .  
-        //            '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';      
         $btn = '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
-$btn .= '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
-$btn .= '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
+        $btn .= '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
+        $btn .= '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
   
         return $btn; 
         }) 
@@ -250,4 +247,18 @@ $btn .= '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier
         }
         return redirect('/');
     }
+    public function export_pdf() {
+        $supplier = SupplierModel::select( 'supplier_kode', 'supplier_nama','supplier_alamat') 
+            ->orderBy('supplier_kode') 
+            ->get();
+        $pdf = Pdf::loadView('supplier.export_pdf', ['supplier' => $supplier]);
+        $pdf->setPaper('a4', 'portrait'); 
+        return $pdf->stream ('Data Barang '.date('Y-m-d H:i:s').'.pdf');
+    }
+
+    public function show_ajax(string $id) {
+        $supplier = SupplierModel::find($id);
+
+        return view('supplier.show_ajax', ['supplier' => $supplier]);
+    } 
 }
