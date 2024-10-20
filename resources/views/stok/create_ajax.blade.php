@@ -1,52 +1,42 @@
-<form action="{{ url('/stok/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/stok/store_ajax') }}" method="POST" id="form-tambah-stok">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Barang</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Stok</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Supplier Stok</label>
-                    <select name="supplier_id" id="supplier" class="form-control" required>
+                    <label>Supplier</label>
+                    <select name="supplier_id" id="supplier_id" class="form-control" required>
                         <option value="">- Pilih Supplier -</option>
-                        @foreach($supplier as $s)
-                            <option value="{{ $s->supplier_id }}">{{ $s->supplier_nama }}</option>
+                        @foreach($supplier as $sup)  <!-- Pastikan ini benar -->
+                            <option value="{{ $sup->supplier_id }}">{{ $sup->supplier_nama }}</option>
                         @endforeach
                     </select>
                     <small id="error-supplier_id" class="error-text form-text text-danger"></small>
-                </div>
+                </div>                
                 <div class="form-group">
-                    <label>Stok Barang</label>
-                    <select name="barang_id" id="barang" class="form-control" required>
+                    <label>Barang</label>
+                    <select name="barang_id" id="barang_id" class="form-control" required>
                         <option value="">- Pilih Barang -</option>
-                        @foreach($barang as $s)
-                            <option value="{{ $s->barang_id }}">{{ $s->barang_nama }}</option>
+                        @foreach($barang as $b) <!-- Pastikan ini menggunakan $barang -->
+                            <option value="{{ $b->barang_id }}">{{ $b->barang_nama }}</option>
                         @endforeach
                     </select>
                     <small id="error-barang_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Penerima Stok</label>
-                    <select name="user_id" id="user" class="form-control" required>
-                        <option value="">- Pilih User -</option>
-                        @foreach($user as $s)
-                            <option value="{{ $s->user_id }}">{{ $s->nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-user_id" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Tanggal Stok Diterima</label>
-                    <input type="datetime-local" name="stok_tanggal" id="stok_tanggal" class="form-control" required>
+                    <label>Tanggal Stok</label>
+                    <input type="date" name="stok_tanggal" id="stok_tanggal" class="form-control" required>
                     <small id="error-stok_tanggal" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Jumlah</label>
-                    <input value="" type="number" name="stok_jumlah" id="stok_jumlah" class="form-control" required>
+                    <label>Jumlah Stok</label>
+                    <input type="number" name="stok_jumlah" id="stok_jumlah" class="form-control" required min="1">
                     <small id="error-stok_jumlah" class="error-text form-text text-danger"></small>
                 </div>
             </div>
@@ -60,32 +50,32 @@
 
 <script>
     $(document).ready(function() {
-        $("#form-tambah").validate({
+        $("#form-tambah-stok").validate({
             rules: {
                 supplier_id: { required: true, number: true },
                 barang_id: { required: true, number: true },
-                user_id: { required: true, number: true },
-                stok_tanggal: { required: true},
-                stok_jumlah: { required: true},
+                stok_tanggal: { required: true, date: true },
+                stok_jumlah: { required: true, number: true, min: 1 }
             },
             submitHandler: function(form) {
+                // Kirim data dengan AJAX
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
                     success: function(response) {
                         if (response.status) {
-                            $('#myModal').modal('hide');
+                            $('#myModal').modal('hide'); // Tutup modal
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataStok.ajax.reload();
+                            dataStok.ajax.reload();  // Reload data stok pada DataTables
                         } else {
-                            $('.error-text').text('');
+                            $('.error-text').text(''); // Reset error
                             $.each(response.msgField, function(prefix, val) {
-                                $('#error-' + prefix).text(val[0]);
+                                $('#error-' + prefix).text(val[0]); // Tampilkan error
                             });
                             Swal.fire({
                                 icon: 'error',
@@ -93,9 +83,17 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        // Tangani kesalahan AJAX
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: 'Gagal menghubungi server. Silakan coba lagi.'
+                        });
                     }
                 });
-                return false;
+                return false; // Mencegah pengiriman form default
             },
             errorElement: 'span',
             errorPlacement: function(error, element) {
@@ -110,4 +108,4 @@
             }
         });
     });
-</script>
+    </script>
