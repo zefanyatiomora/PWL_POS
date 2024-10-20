@@ -1,4 +1,3 @@
-<!-- resources/views/profile.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -23,9 +22,13 @@
     @endif
 
     <!-- Menampilkan foto profil yang ada -->
-    <div class="mb-3">
+    <div class="mb-4">
         <h4>Foto Profil Saat Ini:</h4>
-        <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="Profile Picture" class="img-fluid" style="max-width: 200px;">
+        @if(Auth::user()->profile_picture)
+            <img src="{{ asset('storage/' . Auth::user()->profile_picture) }}" alt="Profile Picture" class="img-fluid" style="max-width: 200px;">
+        @else
+            <p>Anda belum mengunggah foto profil.</p>
+        @endif
     </div>
 
     <!-- Form upload foto profil -->
