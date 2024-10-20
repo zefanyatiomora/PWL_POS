@@ -1,3 +1,4 @@
+
 @extends('layouts.template')
 @section('content')
 <div class="card card-outline card-primary">
@@ -37,7 +38,7 @@
 @push('js')
 <script>
     function modalAction(url = '') {
-        $('#myModal').load(url,function() {
+        $('#myModal').load(url, function() {
             $('#myModal').modal('show');
         });
     }
@@ -52,13 +53,14 @@
                 "url": "{{ url('level/list') }}",
                 "dataType": "json",
                 "type": "POST",
+
             },
             columns: [
                 {
-                    data: "DT_RowIndex",
+                    data: "level_id",
                     className: "",
-                    orderable: false,
-                    searchable: false
+                    orderable: true,
+                    searchable: true
                 },
                 {
                     data: "level_kode",
@@ -80,6 +82,7 @@
                 }
             ]
         });
+
     });
 </script>
 @endpush

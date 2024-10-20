@@ -38,8 +38,6 @@ Route::get('/kategori', [KategoriController::class, 'index']);
 
 Route::get('/', [WelcomeController::class,'index']);
 
-// yg dibawah ini adalah semua route lainnya yg harus login dulu baru bisa akses
-
 Route::group(['prefix' => 'user', 'middleware' => 'authorize:ADM'], function() {
     Route::get('/', [UserController::class, 'index']); //Menampilkan laman awal user
     Route::post('/list', [UserController::class, 'list']); //menampilkan data user dalam bentuk json untuk datatables.
@@ -49,8 +47,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'authorize:ADM'], function() {
     Route::get('/create_ajax', [UserController::class, 'create_ajax']); //menambah data user dengan ajax
     Route::post('/ajax', [UserController::class, 'store_ajax']); //menyimpan data yg telah dibuat dengan ajax
     
-    Route::get('/{id}', [UserController::class, 'show']); //menampilkan detail data user
-    Route::get('/{id}/show_ajax', [UserController::class, 'show_ajax']);
+    Route::get('level/{id}', [UserController::class, 'show']); //menampilkan detail data user
+    Route::get('level/{id}/show_ajax', [UserController::class, 'show_ajax']);
 
     Route::get('/{id}/edit', [UserController::class, 'edit']); //Edit data user tertentu
     Route::put('/{id}', [UserController::class, 'update']); //Menyimpan perubahan data user 
