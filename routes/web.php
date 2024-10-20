@@ -47,8 +47,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'authorize:ADM'], function() {
     Route::get('/create_ajax', [UserController::class, 'create_ajax']); //menambah data user dengan ajax
     Route::post('/ajax', [UserController::class, 'store_ajax']); //menyimpan data yg telah dibuat dengan ajax
     
-    Route::get('level/{id}', [UserController::class, 'show']); //menampilkan detail data user
-    Route::get('level/{id}/show_ajax', [UserController::class, 'show_ajax']);
+    Route::get('user/{id}', [UserController::class, 'show']); //menampilkan detail data user
+    Route::get('user/{id}/show_ajax', [UserController::class, 'show_ajax']);
 
     Route::get('/{id}/edit', [UserController::class, 'edit']); //Edit data user tertentu
     Route::put('/{id}', [UserController::class, 'update']); //Menyimpan perubahan data user 
