@@ -1,4 +1,3 @@
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -72,28 +71,24 @@
         </tr>
     </table>
     
-    <h3 class="text-center">LAPORAN DATA STOK</h3>
+    <h3 class="text-center">LAPORAN DATA SUPPLIER</h3>
     
     <table class="border-all">
         <thead>
             <tr>
                 <th class="text-center">No</th>
+                <th>Kode Supplier</th>
                 <th>Nama Supplier</th>
-                <th>Nama Barang</th>
-                <th>Nama User</th>
-                <th>Tanggal</th>
-                <th>Jumlah</th>
+                <th>Alamat</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($stok as $s)
+            @foreach($supplier as $sup)
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
-                    <td>{{ $s->supplier->supplier_name }}</td>
-                    <td>{{ $s->barang->barang_nama }}</td>
-                    <td>{{ $s->user->nama }}</td>
-                    <td>{{ $s->stok_tanggal}}</td>
-                    <td>{{ $s->stok_jumlah }}</td>
+                    <td>{{ $sup->supplier_kode }}</td>
+                    <td>{{ $sup->supplier_name }}</td>
+                    <td>{{ $sup->supplier_alamat }}</td>
                 </tr>
             @endforeach
         </tbody>

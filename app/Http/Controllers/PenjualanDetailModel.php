@@ -25,22 +25,28 @@ class PenjualanDetailController extends Controller
         ]);
     }
 
-    public function list(Request $request, $penjualan_id)
+    public function list(Request $request)
     {
-        $penjualanDetails = PenjualanDetailModel::where('penjualan_id', $penjualan_id)
-            ->with('barang'); // Assuming you have a relationship
-
-        return DataTables::of($penjualanDetails)
+        $penjualans = PenjualanModel::with(['user', 'penjualan_detail'])->select('penjualan_id', 'user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal');
+    
+        if ($request->customer_name) {
+            $penjualans->where('pembeli', 'LIKE', '%' . $request->customer_name . '%');
+        }
+    
+        return DataTables::of($penjualans)
             ->addIndexColumn()
-            ->addColumn('aksi', function ($detail) {
-                $btn = '<button onclick="modalAction(\''.url('/penjualan-detail/' . $detail->id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\''.url('/penjualan-detail/' . $detail->id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
-                return $btn;
+            ->addColumn('jumlah_barang', fn ($penjualan) => $penjualan->penjualan_detail->count())
+            ->addColumn('total_harga', function ($penjualan) {
+                return number_format($penjualan->penjualan_detail->sum(fn ($detail) => $detail->harga * $detail->jumlah), 0, ',', '.');
+            })
+            ->addColumn('aksi', function ($penjualan) {
+                return '<button onclick="modalAction(\'' . url('/penjualan/' . $penjualan->penjualan_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
             })
             ->rawColumns(['aksi'])
             ->make(true);
     }
-
+    
+    
     public function create_ajax($penjualan_id)
     {
         $barangs = BarangModel::select('barang_id', 'barang_nama')->get();

@@ -1,14 +1,13 @@
-
 @extends('layouts.template')
 @section('content')
 <div class="card card-outline card-primary">
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <button onclick="modalAction('{{ url('/stok/import') }}')" class="btn btn-info">Import Barang</button>
+            <button onclick="modalAction('{{ url('/stok/import') }}')" class="btn btn-info">Import Stok</button>
             <a href="{{ url('/stok/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Excel</a>
             <a href="{{ url('/stok/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export PDF </a>
-            <button onclick="modalAction('{{url('stok/create_ajax')}}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+            <button onclick="modalAction('{{url('stok/create_ajax')}}')" class="btn btn-success"><i class="fa fa-plus"></i>Tambah Ajax</button>
 
         </div>
     </div>
@@ -33,11 +32,20 @@
                             </select>
                             <small class="form-text text-muted">Supplier Stok</small>
                         </div>
+                        <div class="col-3">
+                            <select class="form-control" id="user_id" name="user_id" required>
+                                <option value="">- Semua -</option>
+                                @foreach($user as $item)
+                                    <option value="{{ $item->user_id }}">{{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                            <small class="form-text text-muted">Penerima Stok</small>
+                        </div>
                     </div>
                 </div>
             </div>
             
-        <table class="table table-bordered table-striped table-hover table-sm" id="table_stok">
+        <table class="table table-bordered table-striped table-hover table-sm" id="table_stock">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -67,10 +75,10 @@
         });
     }
 
-    var dataStok;
+    var dataStock;
 
     $(document).ready(function() {
-        dataStok = $('#table_stok').DataTable({
+        dataStock = $('#table_stock').DataTable({
             // serverSide: true, jika ingin menggunakan server side processing
             serverSide: true,
             ajax: {
@@ -135,14 +143,14 @@
             ]
         });
 
-        $('#table-stok_filter input').unbind().bind().on('keyup', function(e){
+        $('#table-stock_filter input').unbind().bind().on('keyup', function(e){
             if(e.keyCode == 13){ // enter key
-                tableStok.search(this.value).draw();
+                tableStock.search(this.value).draw();
             }
         }); 
 
         $('#supplier_id, #user_id').on('change',function() {
-            dataStok.ajax.reload();
+            dataStock.ajax.reload();
         })
 
     });

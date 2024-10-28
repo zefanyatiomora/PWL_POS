@@ -56,7 +56,7 @@
                         <option value="">- Pilih Supplier -</option>
                         @foreach($supplier as $s)
                             <option value="{{ $s->supplier_id }}" {{ ($s->supplier_id == $stok->supplier_id) ? 'selected' : '' }}>
-                                {{ $s->supplier_nama }}
+                                {{ $s->supplier_name }}
                             </option>
                         @endforeach
                     </select>

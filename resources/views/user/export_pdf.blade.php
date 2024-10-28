@@ -1,4 +1,3 @@
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -60,7 +59,7 @@
     <table class="border-bottom-header">
         <tr>
             <td width="15%" class="text-center">
-                <img src="{{ asset('polinema-bw.png') }}" alt="Logo Polinema">
+                <img src="{{ public_path('polinema-bw.png') }}" width="150" height="110">
             </td>
             <td width="85%">
                 <span class="text-center d-block font-11 font-bold mb-1">KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI</span>
@@ -72,28 +71,28 @@
         </tr>
     </table>
     
-    <h3 class="text-center">LAPORAN DATA STOK</h3>
+    <h3 class="text-center">LAPORAN DATA PENJUALAN</h3>
     
     <table class="border-all">
         <thead>
             <tr>
                 <th class="text-center">No</th>
-                <th>Nama Supplier</th>
-                <th>Nama Barang</th>
-                <th>Nama User</th>
-                <th>Tanggal</th>
-                <th>Jumlah</th>
+                <th>ID Penjualan</th>
+                <th>Kode Penjualan</th>
+                <th>Nama Pembeli</th>
+                <th>Tanggal Penjualan</th>
+                <th>User ID</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($stok as $s)
+            @foreach($penjualan as $data)
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
-                    <td>{{ $s->supplier->supplier_name }}</td>
-                    <td>{{ $s->barang->barang_nama }}</td>
-                    <td>{{ $s->user->nama }}</td>
-                    <td>{{ $s->stok_tanggal}}</td>
-                    <td>{{ $s->stok_jumlah }}</td>
+                    <td>{{ $data->penjualan_id }}</td>
+                    <td>{{ $data->penjualan_kode }}</td>
+                    <td>{{ $data->pembeli->nama }}</td>
+                    <td>{{ \Carbon\Carbon::parse($data->penjualan_tanggal)->format('d-m-Y') }}</td>
+                    <td>{{ $data->user_id }}</td>
                 </tr>
             @endforeach
         </tbody>

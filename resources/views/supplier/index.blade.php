@@ -2,12 +2,14 @@
 @section('content')
 <div class="card card-outline card-primary">
     <div class="card-header">
-        <h3 class="card-title">{{ $page->title }}</h3>
+        <h3 class="card-title">Daftar Supplier</h3>
         <div class="card-tools">
-            <a class="btn btn-sm btn-primary mt-1" href="{{ url('supplier/create') }}">Tambah</a>
-            <button onclick="modalAction('{{url('supplier/create_ajax')}}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+          <button onclick="modalAction('{{ url('/supplier/import') }}')" class="btn btn-info"><i class="fa fa-file-import"></i> Import Supplier</button>
+          <a href="{{ url('/supplier/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Supplier XLSX</a>
+          <a href="{{ url('/supplier/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export Supplier PDF</a>
+          <button onclick="modalAction('{{ url('/supplier/create_ajax') }}')" class="btn btn-success"><i class="fa fa-plus"></i> Tambah Data</button>
         </div>
-    </div>
+      </div>
     <div class="card-body">
         @if(session('success'))
             <div class="alert alert-success">{{session('success')}}</div>
@@ -57,10 +59,10 @@
             },
             columns: [
                 {
-                    data: "DT_RowIndex",
+                    data: "supplier_id",
                     className: "",
-                    orderable: false,
-                    searchable: false
+                    orderable: true,
+                    searchable: true
                 },
                 {
                     data: "supplier_kode",
@@ -69,7 +71,7 @@
                     searchable: true
                 },
                 {
-                    data: "supplier_nama",
+                    data: "supplier_name",
                     className: "",
                     orderable: true,
                     searchable: true

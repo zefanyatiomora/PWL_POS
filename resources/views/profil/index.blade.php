@@ -1,4 +1,3 @@
-
 @extends('layouts.template')
 
 @section('content')
@@ -20,8 +19,7 @@
                     <!-- Detail pengguna -->
                     <h3 style="font-size: 24px; font-weight: bold;">{{ $user->nama }}</h3>
                     <p class="card-text">Username: {{ $user->username }}</p>
-                    <p class="card-text">Password: ********</p>
-
+                    
                     <!-- Tombol untuk edit profil -->
                     <a href="{{ route('profile.edit') }}" class="btn btn-primary">Edit Profil</a>
 

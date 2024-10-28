@@ -21,7 +21,12 @@
                     <p>Dashboard</p>
                 </a>
             </li>
-
+            <li class="nav-item">
+                <a href="{{ url('/profile') }}" class="nav-link {{ ($activeMenu == 'profile') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-user-circle"></i>
+                    <p>Profil Saya</p>
+                </a>
+            </li>
             <li class="nav-header">Data Pengguna</li>
             <li class="nav-item">
                 <a href="{{ url('/level') }}" class="nav-link {{ ($activeMenu == 'level') ? 'active' : '' }}">
@@ -69,6 +74,12 @@
                     <p>Data Supplier</p>
                 </a>
             </li>
+        <li class="nav-item">
+            <a href="{{ url('/logout') }}" class="nav-link">
+                <i class="nav-icon fas fa-sign-out-alt"></i>
+                <p>Logout</p>
+            </a>
+        </li>
         </ul>
     </nav>
 </div>
